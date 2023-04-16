@@ -136,9 +136,10 @@ void MessageReceiver( void )
 }
 
 
-void SendMessage(unsigned char byte1, unsigned char byte2, unsigned char byte3, unsigned char byte4)
+void SendMessage(unsigned char* message, unsigned char numbytes)
 {
-    ringbuffer8b_enqueue(&tx_data_rb, 0xE3);
+  for(int i = 0;i < numbytes;i++)
+    ringbuffer8b_enqueue(&tx_data_rb, message[i]);
   
-     IE2 |= UCA0TXIE;     // Enable Transmit Register Empty Interrupt
+   IE2 |= UCA0TXIE;     // Enable Transmit Register Empty Interrupt
 }

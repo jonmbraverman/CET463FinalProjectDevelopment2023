@@ -5,6 +5,7 @@
 #include "..\..\MODULES\timing.h"
 #include "..\..\MODULES\encoder.h"
 #include "drive.h"
+#include "communicator.h"
 
 RingBuffer8b_TypeDef drive_cmd_data;
 
@@ -99,7 +100,7 @@ void driveStateMachine( unsigned char drivemodeparam )
     switch(state)
     {
     case 0:
-      target_position = encoder_value[0] + 5000;
+      target_position = encoder_value[0] + 2500;
       state = 1;
       M1DIR_F;
       M2DIR_F;

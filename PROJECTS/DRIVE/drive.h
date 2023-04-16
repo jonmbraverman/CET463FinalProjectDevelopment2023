@@ -15,7 +15,7 @@ extern RingBuffer8b_TypeDef drive_cmd_data;
 // PUBLIC DEFINITIONS
 #define DRIVE_MODE_NORMAL 0
 #define DRIVE_MODE_TEST_CYCLE   1
-#define DRIVE_MODE_TEST_POSITION   1
+#define DRIVE_MODE_TEST_POSITION   2
 
 
 
