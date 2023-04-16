@@ -35,6 +35,11 @@ void configGPIO_UI( void )
   P1OUT = _STATUSLED_BIT | _PUSHBUTTON_BIT;       
 }
 
+void configGPIO_MOTOR_CONTROL( void )
+{
+  P2DIR |= _M1DIR_BIT | _M2DIR_BIT;                      
+}
+
 void configGPIO_CAPTURE_TESTER( void )
 {
   P2DIR |= BIT1+BIT3+BIT5;                        
@@ -45,7 +50,7 @@ void configTIMERA0_10msTick( void )
 {
   TA0CCTL0 = CCIE;                    // Set TA1CCR1 reset/set            
   TA0CCR0 = 10000;                    // Set  Period        
-  TA0CTL = TASSEL_2+MC_1+ID_0;             // SMCLK, upmode, divide by 1
+  TA0CTL = TASSEL_2+MC_1+ID_3;             // SMCLK, upmode, divide by 8
 }
 
 /*
@@ -77,8 +82,8 @@ void configTIMERA0_CAPTURE( void )
 */
 void configTIMERA0_PWM( void )
 {
-  P1DIR = BIT5;                                 // P1.5
-  P1SEL = BIT5;                                 // PWM options P1.5 -> TA0.1
+  P1DIR |= BIT5;                                 // P1.5
+  P1SEL |= BIT5;                                 // PWM options P1.5 -> TA0.1
   
   TA0CCR0 = MTRDRIVE_PERIOD;                    // Set PWM Period        
   TA0CCTL1 = OUTMOD_7;                          // Set TA1CCR1 reset/set            
@@ -99,8 +104,8 @@ void configTIMERA0_PWM( void )
 void configTIMERA1_PWM( void )
 {
   P2OUT = 0;                                    // Clear output buffer
-  P2DIR = _M1PWM_BIT+_M2PWM_BIT;                 // P2.1, P2.4 outputs 
-  P2SEL = _M1PWM_BIT+_M2PWM_BIT;                 // PWM options P2.1,P2.4 -> TA1.1, TA1.2 
+  P2DIR |= _M1PWM_BIT+_M2PWM_BIT;                 // P2.1, P2.4 outputs 
+  P2SEL |= _M1PWM_BIT+_M2PWM_BIT;                 // PWM options P2.1,P2.4 -> TA1.1, TA1.2 
   
   TA1CCR0 = MTRDRIVE_PERIOD;                    // Set PWM Period        
   TA1CCTL1 = OUTMOD_7;                          // Set TA1CCR1 reset/set            
@@ -144,7 +149,6 @@ void configUSCI_A0( void )
   UCA0CTL1 &= ~UCSWRST;                          // **Initialize USCI state machine**  BIC.B #UCSWRST, &UCA0CTL1
   IE2 |= UCA0RXIE;                               // Enable USCI_A0 RX interrupt
 }
-
 
 
 void setP21DutyCycle ( unsigned int dutycycle )

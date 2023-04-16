@@ -1,6 +1,8 @@
 // // drive.c 
 #include "msp430.h"
 #include "..\..\MODULES\ring_buffer8.h"
+#include "..\..\MODULES\hal.h"
+#include "..\..\MODULES\timing.h"
 #include "drive.h"
 
 RingBuffer8b_TypeDef drive_cmd_data;
@@ -54,13 +56,44 @@ void driveStateMachine( unsigned char drivemodeparam )
     switch(state)
     {
     case 0:
+      setCountDown1(100); //   start 1 second countdown
+      state = 1;
+      break;
+    case 1:
+      if(getCountDown1() == 0)
+      {
+        state = 2;
+        setCountDown1(100); //   start 1 second countdown        
+      }
+      break;
+    case 2:
+      M1DIR_F;
+      M2DIR_F;
+      setP21DutyCycle(MTRDRIVE_PERIOD);
+      setP24DutyCycle(MTRDRIVE_PERIOD);
+      if(getCountDown1() == 0)
+      {
+        state = 3;
+        setCountDown1(100); //   start 1 second countdown        
+      }
+      break;
+    case 3:
+      M1DIR_R;
+      M2DIR_R;      
+      setP21DutyCycle(MTRDRIVE_PERIOD);
+      setP24DutyCycle(MTRDRIVE_PERIOD);
+      if(getCountDown1() == 0)
+      {
+        state = 0;
+        setCountDown1(100); //   start 1 second countdown        
+      }
+      break;
       
       
     }
   }
-      
-
-  
+    
+ 
   
   
 }

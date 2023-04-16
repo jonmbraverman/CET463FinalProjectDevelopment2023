@@ -10,8 +10,8 @@
 ;               | | | | | | | | 
 ;               | | | | | | | *-
 ;               | | | | | | *---PWM (T1-OUT1) 
-;               | | | | | *-----
-;               | | | | *-------
+;               | | | | | *-----DIR
+;               | | | | *-------DIR
 ;               | | | *---------PWM (T1-OUT2) 
 ;               | | *-----------
 ;               | *-------------
@@ -39,6 +39,7 @@ void main( void )
   DCOCTL =  CALDCO_8MHZ; 
 
   configGPIO_UI();
+  configGPIO_MOTOR_CONTROL();
   //configGPIO_CAPTURE_TESTER();
   configTIMERA0_10msTick();
   configTIMERA1_PWM();
@@ -52,7 +53,7 @@ void main( void )
    
     MessageReceiver();
     
-    driveStateMachine(DRIVE_MODE_NORMAL);
+    driveStateMachine(DRIVE_MODE_TEST);
    
     testeventdata();
     testserialdata();
