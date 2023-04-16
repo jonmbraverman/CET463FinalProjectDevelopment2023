@@ -26,6 +26,7 @@
 void configGPIO_UI( void );
 void configGPIO_CAPTURE_TESTER( void );
 void configGPIO_MOTOR_CONTROL( void );
+void setEdgesandClearFlags(unsigned char motor);
 void configTIMERA0_10msTick( void );
 void configTIMERA0_CAPTURE ( void );
 void configTIMERA0_PWM( void );

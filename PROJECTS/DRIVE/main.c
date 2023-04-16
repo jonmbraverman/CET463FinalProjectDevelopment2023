@@ -8,26 +8,26 @@
 ;
 ;       P2      7 6 5 4 3 2 1 0
 ;               | | | | | | | | 
-;               | | | | | | | *-
-;               | | | | | | *---PWM (T1-OUT1) 
-;               | | | | | *-----DIR
-;               | | | | *-------DIR
-;               | | | *---------PWM (T1-OUT2) 
-;               | | *-----------
-;               | *-------------
-;               *---------------XTAL OUT
+;               | | | | | | | 0-
+;               | | | | | | 1---PWM (T1-OUT1)  MOTOR 1
+;               | | | | | 2-----DIR            MOTOR 1       
+;               | | | | 3-------DIR            MOTOR 2
+;               | | | 4---------PWM (T1-OUT2)  MOTOR 2
+;               | | 5-----------
+;               | 6-------------
+;               7---------------XTAL OUT
 ;
 ;
 ;      P1       7 6 5 4 3 2 1 0
 ;               | | | | | | | | 
-;               | | | | | | | *-LED
-;               | | | | | | *---UARTA0 (RX)
-;               | | | | | *-----UARTA0 (TX)
-;               | | | | *-------PB
-;               | | | *---------
-;               | | *-----------
-;               | *-------------
-;               *---------------
+;               | | | | | | | 0-LED
+;               | | | | | | 1---UARTA0 (RX)
+;               | | | | | 2-----UARTA0 (TX)
+;               | | | | 3-------PB
+;               | | | 4---------ENCODER         MOTOR 1 CHA
+;               | | 5-----------ENCODER         MOTOR 1 CHB
+;               | 6-------------ENCODER         MOTOR 2 CHA
+;               7---------------ENCODER         MOTOR 2 CHB
 ****************************************************************************** */
 
 
@@ -40,6 +40,7 @@ void main( void )
 
   configGPIO_UI();
   configGPIO_MOTOR_CONTROL();
+  confifGPIO_ENCODER();
   //configGPIO_CAPTURE_TESTER();
   configTIMERA0_10msTick();
   configTIMERA1_PWM();
@@ -53,7 +54,7 @@ void main( void )
    
     MessageReceiver();
     
-    driveStateMachine(DRIVE_MODE_TEST);
+    driveStateMachine(DRIVE_MODE_TEST_POSITION);
    
     testeventdata();
     testserialdata();

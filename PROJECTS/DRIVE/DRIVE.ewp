@@ -2306,6 +2306,12 @@
             <name>$PROJ_DIR$\..\..\MODULES\capture.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\..\MODULES\encoder.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\MODULES\encoder.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\MODULES\hal.c</name>
         </file>
         <file>

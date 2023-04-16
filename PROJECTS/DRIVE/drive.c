@@ -3,6 +3,7 @@
 #include "..\..\MODULES\ring_buffer8.h"
 #include "..\..\MODULES\hal.h"
 #include "..\..\MODULES\timing.h"
+#include "..\..\MODULES\encoder.h"
 #include "drive.h"
 
 RingBuffer8b_TypeDef drive_cmd_data;
@@ -51,7 +52,7 @@ void driveStateMachine( unsigned char drivemodeparam )
     }
 
   }
-  else if(drivemodeparam == DRIVE_MODE_TEST)
+  else if(drivemodeparam == DRIVE_MODE_TEST_CYCLE)
   {
     switch(state)
     {
@@ -86,6 +87,47 @@ void driveStateMachine( unsigned char drivemodeparam )
       {
         state = 0;
         setCountDown1(100); //   start 1 second countdown        
+      }
+      break;
+      
+      
+    }
+  }
+  else if(drivemodeparam == DRIVE_MODE_TEST_POSITION)
+  {
+    static unsigned int target_position;
+    switch(state)
+    {
+    case 0:
+      target_position = encoder_value[0] + 5000;
+      state = 1;
+      M1DIR_F;
+      M2DIR_F;
+      setP21DutyCycle(MTRDRIVE_PERIOD);
+      setP24DutyCycle(MTRDRIVE_PERIOD);      
+      break;
+    case 1:
+      if(encoder_value[0] >= target_position)
+      {
+        state = 2; 
+        setP21DutyCycle(0);
+        setP24DutyCycle(0);              
+      }
+      break;
+    case 2:
+      target_position = 32767;
+      state = 3;
+      M1DIR_R;
+      M2DIR_R;
+      setP21DutyCycle(MTRDRIVE_PERIOD);
+      setP24DutyCycle(MTRDRIVE_PERIOD);
+      break;
+    case 3:      
+      if(encoder_value[0] <= target_position)
+      {
+        state = 0; 
+        setP21DutyCycle(0);
+        setP24DutyCycle(0);              
       }
       break;
       

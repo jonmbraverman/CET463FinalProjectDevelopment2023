@@ -45,6 +45,69 @@ void configGPIO_CAPTURE_TESTER( void )
   P2DIR |= BIT1+BIT3+BIT5;                        
 }
 
+void confifGPIO_ENCODER( void )
+{
+  P1REN |= BIT4 | BIT5 | BIT6 | BIT7; // Enable pull-up resistors for P1.4,5,6,7 - Encoder Inputs
+  P1OUT |= BIT4 | BIT5 | BIT6 | BIT7; // Enable pull-up resistors for P1.4,5,6,7 - Encoder Inputs
+  P1IE |= BIT4 | BIT5 | BIT6 | BIT7; // Enable Interrupt input for P.1,5,6,7 - Encoder Inputs     
+  
+ setEdgesandClearFlags(0);
+ setEdgesandClearFlags(1);
+   
+}
+
+void setEdgesandClearFlags(unsigned char motor)
+{
+  if(motor == 0)
+  {
+    if(P1IN & BIT4)
+    {
+      P1IES |= BIT4;                            // P1.4 Hi/lo edge
+    }
+    else
+    {
+      P1IES &= ~BIT4;                            // P1.4 Lo/hi edge
+    }
+    
+    if(P1IN & BIT5)
+    {
+      P1IES |= BIT5;                            // P1.5 Hi/lo edge
+    }
+    else
+    {
+      P1IES &= ~BIT5;                            // P1.5 Lo/hi edge      
+    }        
+    
+    P1IFG &= ~(BIT4 | BIT5);                           // P1.4/P1.5 IFG cleared
+  }
+  else
+  {
+    
+    if(P1IN & BIT6)
+    {
+      P1IES |= BIT6;                            // P1.4 Hi/lo edge
+    }
+    else
+    {
+      P1IES &= ~BIT6;                            // P1.4 Lo/hi edge
+    }
+    
+    if(P1IN & BIT7)
+    {
+      P1IES |= BIT7;                            // P1.5 Hi/lo edge
+    }
+    else
+    {
+      P1IES &= ~BIT7;                            // P1.5 Lo/hi edge      
+    }      
+    
+    P1IFG &= ~(BIT6 | BIT7);                           // P1.6/P1.7 IFG cleared
+    
+  }  
+  
+  
+}
+
 
 void configTIMERA0_10msTick( void )
 {
@@ -149,6 +212,8 @@ void configUSCI_A0( void )
   UCA0CTL1 &= ~UCSWRST;                          // **Initialize USCI state machine**  BIC.B #UCSWRST, &UCA0CTL1
   IE2 |= UCA0RXIE;                               // Enable USCI_A0 RX interrupt
 }
+
+
 
 
 void setP21DutyCycle ( unsigned int dutycycle )
