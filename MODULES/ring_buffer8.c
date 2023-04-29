@@ -60,9 +60,9 @@ bool ringbuffer8b_isempty(RingBuffer8b_TypeDef *rb)
 /**
  *  "gets" data from the ring buffer and adjusts the tail
 **/
-unsigned int ringbuffer8b_dequeue(RingBuffer8b_TypeDef *rb)
+unsigned char ringbuffer8b_dequeue(RingBuffer8b_TypeDef *rb)
 {
-unsigned int retval;
+unsigned char retval;
  
 
   retval = rb->array[rb->tail++];
@@ -81,7 +81,7 @@ unsigned int retval;
 /**
  *  "puts" data into the ring buffer and adjusts the head
 **/
-bool ringbuffer8b_enqueue(RingBuffer8b_TypeDef *rb, unsigned int bytedata)
+bool ringbuffer8b_enqueue(RingBuffer8b_TypeDef *rb, unsigned char bytedata)
 { 
     // if buffer is not full read the receive data register and increment head pointer.
     if( ringbuffer8b_isfull(rb) == FALSE )

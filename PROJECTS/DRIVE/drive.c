@@ -96,6 +96,8 @@ void driveStateMachine( unsigned char drivemodeparam )
   }
   else if(drivemodeparam == DRIVE_MODE_TEST_POSITION)
   {
+    if(!PB)
+      state = 100;
     static unsigned int target_position;
     switch(state)
     {
@@ -131,7 +133,17 @@ void driveStateMachine( unsigned char drivemodeparam )
         setP24DutyCycle(0);              
       }
       break;
+    case 100:
+      setP21DutyCycle(0);
+      setP24DutyCycle(0);              
       
+      if (PB)
+        state = 101;
+      break;
+    case 101:
+      if (!PB)
+        state = 0;
+      break;
       
     }
   }
