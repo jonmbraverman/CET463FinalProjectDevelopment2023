@@ -19,6 +19,8 @@ extern RingBuffer8b_TypeDef drive_cmd_data;
 #define DRIVE_MODE_TEST_POSITION2   3
 
 
-
+#define DRIVE_COMMAND_FORWARD 0
+#define DRIVE_COMMAND_REVERSE 1
+#define DRIVE_COMMAND_STOP 2
 
 #endif

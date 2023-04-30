@@ -30,6 +30,7 @@ void confifGPIO_ENCODER( void );
 void setEdgesandClearFlags(unsigned char motor);
 void configTIMERA0_10msTick( void );
 void configTIMERA0_CAPTURE ( void );
+void configTIMERA0CC1_CAPTURE (void);
 void configTIMERA0_PWM( void );
 void configTIMERA1_PWM( void );
 void configTIMERA1_CAPTURE ( void );

@@ -30,9 +30,9 @@
 void configGPIO_UI( void )
 {
   P1OUT = 0;                                    // Clear output buffer           
-  P1DIR = _STATUSLED_BIT;                        // StatusLED (P1.0) output
-  P1REN = _PUSHBUTTON_BIT;                      // Pushbutton pull up resistor enabled
-  P1OUT = _STATUSLED_BIT | _PUSHBUTTON_BIT;       
+  P1DIR |= _STATUSLED_BIT;                        // StatusLED (P1.0) output
+  P1REN |= _PUSHBUTTON_BIT;                      // Pushbutton pull up resistor enabled
+  P1OUT |= _STATUSLED_BIT | _PUSHBUTTON_BIT;       
 }
 
 void configGPIO_MOTOR_CONTROL( void )
@@ -42,7 +42,8 @@ void configGPIO_MOTOR_CONTROL( void )
 
 void configGPIO_CAPTURE_TESTER( void )
 {
-  P2DIR |= BIT1+BIT3+BIT5;                        
+  P2SEL &= ~BIT6;
+  P2DIR |= BIT6;                        
 }
 
 void confifGPIO_ENCODER( void )
@@ -119,18 +120,18 @@ void configTIMERA0_10msTick( void )
 /*
 ;   Timer_A0, Capture TA0.0, , DCO SMCLK
 ;
-;   Description: Allows a program to capture a pulse width on P1.1
+;   Description: Allows a program to capture a pulse width on P1.2
 ;   using Timer_A0 configured for continuous mode. 
-;   The value in TA1CCR0 reflects the period of the signal on P1.1
+;   The value in TA1CCR1 reflects the period of the signal on P1.2
 ;  
 ;   ACLK = n/a, SMCLK = MCLK = TACLK = default DCO
 */
-void configTIMERA0_CAPTURE( void )
+void configTIMERA0CC1_CAPTURE( void )
 {
-  P1DIR &= BIT1;                // P1.1 Input
-  P1DIR |= BIT1;                // Enable TIMER A0.1 CCI0A on P1.1
-  TA0CTL = TASSEL_2+MC_2;               // SMCLK, Continuous Counting Mode
-  TA0CCTL0 = CM_1 + CCIS_0 + SCS + CAP; // Capture on Rising Edge, CCI0A, Synchronized capture,  Capture Mode
+  P1DIR &= ~BIT2;                // P1.2 Input
+  P1SEL |= BIT2;                // Enable TIMER A0.1 CCI1A on P1.2
+  TA0CTL = TASSEL_2+MC_2+ID_3;               // SMCLK, Continuous Counting Mode
+  TA0CCTL1 = CM_3 + CCIS_0 + SCS + CAP + CCIE; // Capture on Both Edges, CCI0B, Synchronized capture,  Capture Mode
   
 }
 
@@ -166,7 +167,7 @@ void configTIMERA0_PWM( void )
 */
 void configTIMERA1_PWM( void )
 {
-  P2OUT = 0;                                    // Clear output buffer
+  P2OUT &= ~(_M1PWM_BIT+_M2PWM_BIT);                                    // Clear output buffer
   P2DIR |= _M1PWM_BIT+_M2PWM_BIT;                 // P2.1, P2.4 outputs 
   P2SEL |= _M1PWM_BIT+_M2PWM_BIT;                 // PWM options P2.1,P2.4 -> TA1.1, TA1.2 
   

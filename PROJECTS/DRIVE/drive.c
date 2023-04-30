@@ -16,7 +16,7 @@ void driveStateMachine( unsigned char drivemodeparam )
 { 
   static unsigned int data1;
   static unsigned char state = 0;
-  unsigned int inputdata = 0;  // Assume this data actually comes from a ring buffer
+  static unsigned int inputdata = 0;  // Assume this data actually comes from a ring buffer
   static unsigned char inputcommand;
   bool new_command = FALSE;
   
@@ -44,9 +44,25 @@ void driveStateMachine( unsigned char drivemodeparam )
       {
         case 0:                               // command to drive forward received
                                               // GO TO state x to wait for number of feed in ring buffer
+          M1DIR_F;
+          M2DIR_F;
+          setP21DutyCycle(MTRDRIVE_PERIOD);
+          setP24DutyCycle(MTRDRIVE_PERIOD);
+          state = 0;
           break;
-
-        default:
+      case 1:
+          M1DIR_R;
+          M2DIR_R;      
+          setP21DutyCycle(MTRDRIVE_PERIOD);
+          setP24DutyCycle(MTRDRIVE_PERIOD);
+          state = 0;                           //
+          break;
+      case 2:
+          setP21DutyCycle(0);
+          setP24DutyCycle(0);      
+          state = 0;                           // 
+          break;
+       default:
          state = 0;                           // invalid command received
       }
       break;

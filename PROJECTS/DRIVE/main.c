@@ -1,5 +1,6 @@
-#include <msp430g2553.h>
+#include "msp430g2553.h"
 #include "..\..\MODULES\hal.h"
+#include "..\..\MODULES\capture.h"
 #include "communicator.h"
 #include "drive.h"
 #include "tests.h"
@@ -14,7 +15,7 @@
 ;               | | | | 3-------DIR            MOTOR 2
 ;               | | | 4---------PWM (T1-OUT2)  MOTOR 2
 ;               | | 5-----------
-;               | 6-------------
+;               | 6-------------TRIG           RANGE SENSOR
 ;               7---------------XTAL OUT
 ;
 ;
@@ -22,7 +23,7 @@
 ;               | | | | | | | | 
 ;               | | | | | | | 0-LED
 ;               | | | | | | 1---UARTA0 (RX)
-;               | | | | | 2-----UARTA0 (TX)
+;               | | | | | 2-----CAPTURE (T0-1A) RANGE SENSOR
 ;               | | | | 3-------PB
 ;               | | | 4---------ENCODER         MOTOR 1 CHA
 ;               | | 5-----------ENCODER         MOTOR 1 CHB
@@ -41,11 +42,11 @@ void main( void )
   configGPIO_UI();
   configGPIO_MOTOR_CONTROL();
   confifGPIO_ENCODER();
-  //configGPIO_CAPTURE_TESTER();
-  configTIMERA0_10msTick();
+    //configTIMERA0_10msTick();
   configTIMERA1_PWM();
-  //configTIMERA1_CAPTURE();
-  configUSCI_A0();
+  configTIMERA0CC1_CAPTURE();
+  configGPIO_CAPTURE_TESTER();
+    //configUSCI_A0();
   _BIS_SR(GIE);                 // Enable interrupt
   
   
@@ -54,10 +55,13 @@ void main( void )
    
     MessageReceiver();
     
-    driveStateMachine(DRIVE_MODE_TEST_POSITION);
+    getcapturedata();
+    
+    driveStateMachine(DRIVE_MODE_NORMAL);
    
-    testeventdata();
-    testserialdata();
+    //testeventdata();
+    //testserialdata();
+    testcapture();
     
   }
 }

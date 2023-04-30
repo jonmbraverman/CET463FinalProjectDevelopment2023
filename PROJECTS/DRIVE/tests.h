@@ -7,7 +7,7 @@
 
 void testeventdata(void);
 void testserialdata(void);
-
-
+void testcapture(void);
+void getcapturedata ( void);
 
 #endif
