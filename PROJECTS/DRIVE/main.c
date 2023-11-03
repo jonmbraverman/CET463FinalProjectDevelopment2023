@@ -23,7 +23,7 @@
 ;               | | | | | | | | 
 ;               | | | | | | | 0-LED
 ;               | | | | | | 1---UARTA0 (RX)
-;               | | | | | 2-----CAPTURE (T0-1A) RANGE SENSOR
+;               | | | | | 2-----CAPTURE (T0-1A ) RANGE SENSOR
 ;               | | | | 3-------PB
 ;               | | | 4---------ENCODER         MOTOR 1 CHA
 ;               | | 5-----------ENCODER         MOTOR 1 CHB
@@ -48,7 +48,12 @@ void main( void )
   configGPIO_CAPTURE_TESTER();
     //configUSCI_A0();
   _BIS_SR(GIE);                 // Enable interrupt
+ 
   
+  char mode = DRIVE_MODE_NORMAL;
+  if(!PB)
+    mode = DRIVE_MODE_TEST_CYCLE;
+ 
   
   while(1)
   {
@@ -57,7 +62,7 @@ void main( void )
     
     getcapturedata();
     
-    driveStateMachine(DRIVE_MODE_NORMAL);
+    driveStateMachine(mode);
    
     //testeventdata();
     //testserialdata();
