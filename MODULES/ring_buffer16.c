@@ -60,7 +60,7 @@ bool ringbuffer16b_isempty(RingBuffer16b_TypeDef *rb)
 /**
  *  "gets" data from the ring buffer and adjusts the tail
 **/
-unsigned int ringbuffer16b_dequeue16b(RingBuffer16b_TypeDef *rb)
+unsigned int ringbuffer16b_dequeue(RingBuffer16b_TypeDef *rb)
 {
 unsigned int retval;
  

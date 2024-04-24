@@ -30,14 +30,83 @@
 void configGPIO_UI( void )
 {
   P1OUT = 0;                                    // Clear output buffer           
-  P1DIR = _STATUSLED_BIT;                        // StatusLED (P1.0) output
-  P1REN = _PUSHBUTTON_BIT;                      // Pushbutton pull up resistor enabled
-  P1OUT = _STATUSLED_BIT | _PUSHBUTTON_BIT;       
+  P1DIR |= _STATUSLED_BIT;                        // StatusLED (P1.0) output
+  P1REN |= _PUSHBUTTON_BIT;                      // Pushbutton pull up resistor enabled
+  P1OUT |= _STATUSLED_BIT | _PUSHBUTTON_BIT;       
+}
+
+void configGPIO_MOTOR_CONTROL( void )
+{
+  P2DIR |= _M1DIR_BIT | _M2DIR_BIT;                      
 }
 
 void configGPIO_CAPTURE_TESTER( void )
 {
-  P2DIR |= BIT1+BIT3+BIT5;                        
+  P2SEL &= ~BIT6;
+  P2DIR |= BIT6;                        
+}
+
+void confifGPIO_ENCODER( void )
+{
+  P1REN |= BIT4 | BIT5 | BIT6 | BIT7; // Enable pull-up resistors for P1.4,5,6,7 - Encoder Inputs
+  P1OUT |= BIT4 | BIT5 | BIT6 | BIT7; // Enable pull-up resistors for P1.4,5,6,7 - Encoder Inputs
+  P1IE |= BIT4 | BIT5 | BIT6 | BIT7; // Enable Interrupt input for P.1,5,6,7 - Encoder Inputs     
+  
+ setEdgesandClearFlags(0);
+ setEdgesandClearFlags(1);
+   
+}
+
+void setEdgesandClearFlags(unsigned char motor)
+{
+  if(motor == 0)
+  {
+    if(P1IN & BIT4)
+    {
+      P1IES |= BIT4;                            // P1.4 Hi/lo edge
+    }
+    else
+    {
+      P1IES &= ~BIT4;                            // P1.4 Lo/hi edge
+    }
+    
+    if(P1IN & BIT5)
+    {
+      P1IES |= BIT5;                            // P1.5 Hi/lo edge
+    }
+    else
+    {
+      P1IES &= ~BIT5;                            // P1.5 Lo/hi edge      
+    }        
+    
+    P1IFG &= ~(BIT4 | BIT5);                           // P1.4/P1.5 IFG cleared
+  }
+  else
+  {
+    
+    if(P1IN & BIT6)
+    {
+      P1IES |= BIT6;                            // P1.4 Hi/lo edge
+    }
+    else
+    {
+      P1IES &= ~BIT6;                            // P1.4 Lo/hi edge
+    }
+    
+    if(P1IN & BIT7)
+    {
+      P1IES |= BIT7;                            // P1.5 Hi/lo edge
+    }
+    else
+    {
+      P1IES &= ~BIT7;                            // P1.5 Lo/hi edge      
+    }      
+    
+    P1IFG &= ~(BIT6 | BIT7);                           // P1.6/P1.7 IFG cleared
+    
+  }  
+  
+  
 }
 
 
@@ -51,18 +120,18 @@ void configTIMERA0_10msTick( void )
 /*
 ;   Timer_A0, Capture TA0.0, , DCO SMCLK
 ;
-;   Description: Allows a program to capture a pulse width on P1.1
+;   Description: Allows a program to capture a pulse width on P1.2
 ;   using Timer_A0 configured for continuous mode. 
-;   The value in TA1CCR0 reflects the period of the signal on P1.1
+;   The value in TA1CCR1 reflects the period of the signal on P1.2
 ;  
 ;   ACLK = n/a, SMCLK = MCLK = TACLK = default DCO
 */
-void configTIMERA0_CAPTURE( void )
+void configTIMERA0CC1_CAPTURE( void )
 {
-  P1DIR &= BIT1;                // P1.1 Input
-  P1DIR |= BIT1;                // Enable TIMER A0.1 CCI0A on P1.1
-  TA0CTL = TASSEL_2+MC_2;               // SMCLK, Continuous Counting Mode
-  TA0CCTL0 = CM_1 + CCIS_0 + SCS + CAP; // Capture on Rising Edge, CCI0A, Synchronized capture,  Capture Mode
+  P1DIR &= ~BIT2;                // P1.2 Input
+  P1SEL |= BIT2;                // Enable TIMER A0.1 CCI1A on P1.2
+  TA0CTL = TASSEL_2+MC_2+ID_3;               // SMCLK, Continuous Counting Mode
+  TA0CCTL1 = CM_3 + CCIS_0 + SCS + CAP + CCIE; // Capture on Both Edges, CCI0B, Synchronized capture,  Capture Mode
   
 }
 
@@ -77,12 +146,12 @@ void configTIMERA0_CAPTURE( void )
 */
 void configTIMERA0_PWM( void )
 {
-  P1DIR = BIT5;                                 // P1.5
-  P1SEL = BIT5;                                 // PWM options P1.5 -> TA0.1
+  P1DIR |= BIT5;                                 // P1.5
+  P1SEL |= BIT5;                                 // PWM options P1.5 -> TA0.1
   
   TA0CCR0 = MTRDRIVE_PERIOD;                    // Set PWM Period        
   TA0CCTL1 = OUTMOD_7;                          // Set TA1CCR1 reset/set            
-  TA0CCR1 = MTRDRIVE_OFF;                           // Init TA1CCR1 PWM Duty Cycle	
+  TA0CCR1 = MTRDRIVE_OFF;                       // Init TA1CCR1 PWM Duty Cycle	for off (bi
   TA0CTL = TASSEL_2+MC_1;                       // SMCLK, upmode
 }
 
@@ -98,9 +167,9 @@ void configTIMERA0_PWM( void )
 */
 void configTIMERA1_PWM( void )
 {
-  P2OUT = 0;                                    // Clear output buffer
-  P2DIR = _M1PWM_BIT+_M2PWM_BIT;                 // P2.1, P2.2 outputs 
-  P2SEL = _M1PWM_BIT+_M2PWM_BIT;                 // PWM options P2.1,P2.4 -> TA1.1, TA1.2 
+  P2OUT &= ~(_M1PWM_BIT+_M2PWM_BIT);                                    // Clear output buffer
+  P2DIR |= _M1PWM_BIT+_M2PWM_BIT;                 // P2.1, P2.4 outputs 
+  P2SEL |= _M1PWM_BIT+_M2PWM_BIT;                 // PWM options P2.1,P2.4 -> TA1.1, TA1.2 
   
   TA1CCR0 = MTRDRIVE_PERIOD;                    // Set PWM Period        
   TA1CCTL1 = OUTMOD_7;                          // Set TA1CCR1 reset/set            
@@ -144,6 +213,7 @@ void configUSCI_A0( void )
   UCA0CTL1 &= ~UCSWRST;                          // **Initialize USCI state machine**  BIC.B #UCSWRST, &UCA0CTL1
   IE2 |= UCA0RXIE;                               // Enable USCI_A0 RX interrupt
 }
+
 
 
 

@@ -17,14 +17,15 @@ typedef struct
 
 
 
-
+#ifndef RING_BUFFER8_H
 typedef enum {FALSE = 0, TRUE = 1} bool;
+#endif
 
 bool ringbuffer16b_isfull(RingBuffer16b_TypeDef *rb);
 bool ringbuffer16b_isempty(RingBuffer16b_TypeDef *rb);
 unsigned int ringbuffer16b_dequeue(RingBuffer16b_TypeDef *rb);
 bool ringbuffer16b_enqueue(RingBuffer16b_TypeDef *rb, unsigned int bytedata);
-void ringbuffer16b_flush1(RingBuffer16b_TypeDef *rb);
+void ringbuffer16b_flush(RingBuffer16b_TypeDef *rb);
 
 
 

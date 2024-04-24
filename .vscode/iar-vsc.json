@@ -1,5 +1,5 @@
 {
-    "ewp": "${workspaceFolder}\\PROJECTS\\BASE\\BASE.ewp",
+    "ewp": "${workspaceFolder}\\PROJECTS\\DRIVE\\DRIVE.ewp",
     "configuration": "Debug",
     "toolchain": "C:\\Program Files (x86)\\IAR Systems\\Embedded Workbench 8.4"
 }
